@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 243, 243, 243)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 243, 243, 243)),
         // useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -55,7 +56,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -75,12 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-
-      body: Center(
-        child: WelcomeWidget()
-      ),
+      body: Center(child: WelcomeWidget()),
       // appBar: AppBar(
-        
+
       // ),
       // floatingActionButton: FloatingActionButton(
       //   backgroundColor: Theme.of(context).colorScheme.primary,
@@ -99,21 +96,25 @@ class WelcomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return
-      Container(
-        padding: EdgeInsets.all(16.0),
-        color: Color.fromRGBO(243, 243, 243, 1),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("SOVA", style: TextStyle(
-            fontSize: 64,
-            fontWeight: FontWeight.w500
-          )), Text("Добро пожаловать! Войдите в свой профиль, чтобы приступить к занятиям."), ElevatedButton(onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => CustomForm()));
-          }, child: Text("Войти"))],
-        ),
-      );
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      color: Color.fromRGBO(243, 243, 243, 1),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text("SOVA",
+              style: TextStyle(fontSize: 64, fontWeight: FontWeight.w500)),
+          Text(
+              "Добро пожаловать! Войдите в свой профиль, чтобы приступить к занятиям."),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CustomForm()));
+              },
+              child: Text("Войти"))
+        ],
+      ),
+    );
     //  Column(
     //   mainAxisAlignment: MainAxisAlignment.center,
     //   children: [Text("SOVA", style: TextStyle(
@@ -126,41 +127,157 @@ class WelcomeWidget extends StatelessWidget {
   }
 }
 
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget screen;
+    switch (index) {
+      case 0:
+        screen = CoursesPage();
+        break;
+      case 1:
+        screen = Statspage();
+        break;
+      case 2:
+        screen = ProfilePage();
+        break;
+      default:
+        throw UnimplementedError('no widget for $index');
+    }
+    return Scaffold(
+        body: Container(
+          color: Theme.of(context).primaryColor,
+          child: screen,
+        ),
+        bottomNavigationBar: NavigationBar(
+            onDestinationSelected: (int currentIndex) {
+              setState(() {
+                index = currentIndex;
+              });
+            },
+            selectedIndex: index,
+            destinations: [
+              NavigationDestination(icon: Icon(Icons.home), label: "Курсы"),
+              NavigationDestination(
+                  icon: Icon(Icons.assessment_sharp), label: "Статистика"),
+              NavigationDestination(
+                  icon: Icon(Icons.account_circle), label: "Профиль"),
+            ]));
+  }
+}
+
 class CustomForm extends StatelessWidget {
   const CustomForm({
     super.key,
   });
-
-  
 
   @override
   Widget build(BuildContext context) {
     // final theme = Theme.of(context);
     return Scaffold(
       body: Center(
-        child: Form(child: 
-      Column(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(Icons.arrow_back)),
+              TextField(
+                  decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                hintText: "Почта",
+              )),
+              TextField(
+                  decoration: InputDecoration(
+                border: UnderlineInputBorder(),
+                hintText: "Пароль",
+              )),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MainScreen()));
+                  },
+                  child: Text("Отправить"))
+            ],
+          )),
+        ),
+      ),
+    );
+  }
+}
+
+class CoursesPage extends StatelessWidget {
+  const CoursesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: [
+        CourseWidget(courseLabel: "Курс 1"),
+        CourseWidget(courseLabel: "Курс 2")
+      ],
+    );
+  }
+}
+
+class CourseWidget extends StatelessWidget {
+  const CourseWidget({
+    super.key,
+    required this.courseLabel,
+  });
+
+  final String courseLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 36),
+      child: Text(
+        courseLabel,
+      ),
+    ));
+  }
+}
+
+class Statspage extends StatelessWidget {
+  const Statspage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("Статистика занятий"),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(onPressed: () {
-            Navigator.pop(context);
-          }, child: Icon(Icons.arrow_back)),
-          TextField(decoration: 
-            InputDecoration(
-              border: UnderlineInputBorder(),
-              hintText: "Почта",
-            )
-          ),
-          TextField(decoration: 
-            InputDecoration(
-              border: UnderlineInputBorder(),
-              hintText: "Пароль",
-            )
-          ),
-          ElevatedButton(onPressed: () {}, child: Text("Отправить"))
+          Text("С возвращением, Андрей!"),
+          ElevatedButton(onPressed: () {}, child: Text("Настройки")),
+          ElevatedButton(onPressed: () {}, child: Text("Выйти"))
         ],
-      )
-    ),
       ),
     );
   }
