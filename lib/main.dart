@@ -100,15 +100,29 @@ class WelcomeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [Text("SOVA", style: TextStyle(
-        fontSize: 64,
-        fontWeight: FontWeight.w500
-      )), Text("Добро пожаловать! Войдите в свой профиль, чтобы приступить к занятиям."), ElevatedButton(onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CustomForm()));
-      }, child: Text("Войти"))],
-    );
+    return
+      Container(
+        padding: EdgeInsets.all(16.0),
+        color: Color.fromRGBO(243, 243, 243, 1),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Text("SOVA", style: TextStyle(
+            fontSize: 64,
+            fontWeight: FontWeight.w500
+          )), Text("Добро пожаловать! Войдите в свой профиль, чтобы приступить к занятиям."), ElevatedButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => CustomForm()));
+          }, child: Text("Войти"))],
+        ),
+      );
+    //  Column(
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [Text("SOVA", style: TextStyle(
+    //     fontSize: 64,
+    //     fontWeight: FontWeight.w500
+    //   )), Text("Добро пожаловать! Войдите в свой профиль, чтобы приступить к занятиям."), ElevatedButton(onPressed: () {
+    //     Navigator.push(context, MaterialPageRoute(builder: (context) => CustomForm()));
+    //   }, child: Text("Войти"))],
+    // );
   }
 }
 
