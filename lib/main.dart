@@ -29,9 +29,15 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 243, 243, 243)),
-        // useMaterial3: true,
+          seedColor: Colors.blue,
+          primary: const Color.fromARGB(255, 4, 4, 4),
+          // seedColor: const Color.fromARGB(255, 235, 235, 235),
+          // primary: const Color.fromARGB(255, 19, 19, 19),
+        ),
+        brightness: Brightness.light,
+        useMaterial3: true,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -96,26 +102,27 @@ class WelcomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      color: Color.fromRGBO(243, 243, 243, 1),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text("SOVA",
-              style: TextStyle(fontSize: 64, fontWeight: FontWeight.w500)),
-          Text(
-              "Добро пожаловать! Войдите в свой профиль, чтобы приступить к занятиям."),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CustomForm()));
-              },
-              child: Text("Войти"))
-        ],
+    return Scaffold(
+      body: Container(
+        padding: EdgeInsets.all(16.0),
+        // color: Color.fromRGBO(243, 243, 243,ß 1),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("SOVA",
+                style: TextStyle(fontSize: 64, fontWeight: FontWeight.w500)),
+            Text(
+                "Добро пожаловать! Войдите в свой профиль, чтобы приступить к занятиям."),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CustomForm()));
+                },
+                child: Text("Войти"))
+          ],
+        ),
       ),
-    );
-    //  Column(
+    ); //  Column(
     //   mainAxisAlignment: MainAxisAlignment.center,
     //   children: [Text("SOVA", style: TextStyle(
     //     fontSize: 64,
@@ -139,6 +146,22 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).colorScheme.primary;
+
+    String title;
+    switch (index) {
+      case 0:
+        title = "Курсы";
+        break;
+      case 1:
+        title = "Статистика";
+        break;
+      case 2:
+        title = "Профиль";
+      default:
+        throw UnimplementedError('no title for $index');
+    }
+
     Widget screen;
     switch (index) {
       case 0:
@@ -153,9 +176,17 @@ class _MainScreenState extends State<MainScreen> {
       default:
         throw UnimplementedError('no widget for $index');
     }
+
+    // final theme = Theme .of(context).colorScheme.surface;
+
     return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(title),
+        ),
         body: Container(
-          color: Theme.of(context).primaryColor,
+          // color: Theme.of(context).
+          // color: theme,
           child: screen,
         ),
         bottomNavigationBar: NavigationBar(
@@ -220,17 +251,50 @@ class CustomForm extends StatelessWidget {
   }
 }
 
-class CoursesPage extends StatelessWidget {
+class CoursesPage extends StatefulWidget {
   const CoursesPage({super.key});
 
   @override
+  State<CoursesPage> createState() => _CoursesPageState();
+}
+
+class _CoursesPageState extends State<CoursesPage> {
+  int index = 0;
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        CourseWidget(courseLabel: "Курс 1"),
-        CourseWidget(courseLabel: "Курс 2")
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 0, left: 16, right: 16, bottom: 0),
+      child: LayoutBuilder(builder: (context, constraints) {
+        return SingleChildScrollView(
+            child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Доступные курсы"),
+              SizedBox(
+                height: 10,
+              ),
+              CourseWidget(courseLabel: "Курс 1"),
+              CourseWidget(courseLabel: "Курс 2"),
+              CourseWidget(courseLabel: "Курс 3"),
+              CourseWidget(courseLabel: "Курс 4"),
+              CourseWidget(courseLabel: "Курс 5"),
+              CourseWidget(courseLabel: "Курс 6"),
+              CourseWidget(courseLabel: "Курс 7"),
+            ],
+          ),
+        ));
+      }),
     );
+    // return ListView(
+    //   children: [
+    //     CourseWidget(courseLabel: "Курс 1"),
+    //     CourseWidget(courseLabel: "Курс 2")
+    //   ],
+    // );
   }
 }
 
@@ -244,13 +308,34 @@ class CourseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 36),
-      child: Text(
-        courseLabel,
-      ),
-    ));
+    return Column(
+      children: [
+        ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CoursePage(
+                            title: courseLabel,
+                          )));
+            },
+            child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 24, horizontal: 36),
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.mms_outlined),
+                    SizedBox(width: 25),
+                    Text(courseLabel),
+                  ],
+                ))),
+        SizedBox(
+          height: 10,
+          width: 0,
+        )
+      ],
+    );
   }
 }
 
@@ -275,10 +360,69 @@ class ProfilePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("С возвращением, Андрей!"),
-          ElevatedButton(onPressed: () {}, child: Text("Настройки")),
-          ElevatedButton(onPressed: () {}, child: Text("Выйти"))
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfileSettingsPage()));
+              },
+              child: Text("Настройки")),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => WelcomeWidget()));
+              },
+              child: Text("Выйти"))
         ],
       ),
+    );
+    // return Center(
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.center,
+    //     children: [
+    //       Text("С возвращением, Андрей!"),
+    //       ElevatedButton(onPressed: () {}, child: Text("Настройки")),
+    //       ElevatedButton(
+    //           onPressed: () {
+    //             Navigator.push(context,
+    //                 MaterialPageRoute(builder: (context) => WelcomeWidget()));
+    //           },
+    //           child: Text("Выйти"))
+    //     ],
+    //   ),
+    // );
+  }
+}
+
+class CoursePage extends StatelessWidget {
+  const CoursePage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    // return
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        // automaticallyImplyLeading: true,
+      ),
+    );
+  }
+}
+
+class ProfileSettingsPage extends StatelessWidget {
+  const ProfileSettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Настройки"),
+        // automaticallyImplyLeading: true,
+      ),
+      body: Center(),
     );
   }
 }
